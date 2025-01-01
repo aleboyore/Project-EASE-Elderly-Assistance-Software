@@ -1518,6 +1518,7 @@ namespace EASE
         }
 
         //playWordle
+        //playWordle
         public static void playWordle()
         {
             do
@@ -1559,7 +1560,7 @@ namespace EASE
                             return;
                         }
 
-                        if (string.IsNullOrWhiteSpace(guess) || guess.Length != 5)
+                        if (string.IsNullOrWhiteSpace(guess) || guess.Length != 5 || !IsAllLetters(guess))
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("\tInvalid input! Please enter a valid 5-letter word.");
@@ -1620,6 +1621,17 @@ namespace EASE
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("\n\tReturning to the main menu. Goodbye!");
             Console.ResetColor();
+        }
+
+
+        private static bool IsAllLetters(string input)
+        {
+            foreach (char c in input)
+            {
+                if (!char.IsLetter(c))
+                    return false;
+            }
+            return true;
         }
     }
 }
