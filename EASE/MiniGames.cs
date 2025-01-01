@@ -45,9 +45,7 @@ namespace EASE
                             NumberSequencePlayDifficulty();
                             break;
                         case 2:
-                            Console.WriteLine("\tINSTRUCTIONS");
-                            Console.WriteLine("\tPress any key to return...");
-                            Console.ReadKey();
+                            instruction.playNumSequenceRecall();
                             break;
                         case 3:
                             playingNumSequenceRecall = false; // Exit the loop and return to Minigames Menu
@@ -242,9 +240,7 @@ namespace EASE
                             guessNumDifficulty();
                             break;
                         case 2:
-                            Console.WriteLine("INSTRUCTIONS");
-                            Console.WriteLine("Press any key to return...");
-                            Console.ReadKey();
+                            instruction.playGuessNum();
                             break;
                         case 3:
                             playingGuessNum = false; // Exit the loop and return to the Minigames Menu
@@ -456,9 +452,7 @@ namespace EASE
                             repeatPatternDiffculty();
                             break;
                         case 2:
-                            Console.WriteLine("INSTRUCTIONS");
-                            Console.WriteLine("Press any key to return...");
-                            Console.ReadKey();
+                            instruction.playRepeatPattern();
                             break;
                         case 3:
                             playingRepeatPattern = false; // Exit the loop to return to Minigames Menu
@@ -671,9 +665,7 @@ namespace EASE
                             mathifyDifficulty(); // Call the gameplay difficulty method
                             break;
                         case 2:
-                            Console.WriteLine("INSTRUCTIONS");
-                            Console.WriteLine("Press any key to return...");
-                            Console.ReadKey();
+                            instruction.playMathify();
                             break;
                         case 3:
                             playingMathify = false; // Exit the loop to return to Minigames Menu
@@ -1110,407 +1102,419 @@ namespace EASE
         //playPictureMatching
         public static void playPictureMatching()
         {
-            try
+            do
             {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("\n\t===============================");
-                Console.WriteLine("\n\t       Picture Matching\n");
-                Console.WriteLine("\t===============================");
-                Console.ForegroundColor = ConsoleColor.White;
-
-                Console.WriteLine("\tWelcome to Picture Matching!");
-
-                // Define a list of words
-                string[] allCards = { "Apple", "Banana", "Cherry", "Orange", "Grape", "Lemon", "Peach", "Plum", "Pear", "Berry" };
-
-                // Randomly select 4 unique cards (adjust this number for more cards)
-                Random random = new Random();
-                string[] selectedCards = allCards.OrderBy(x => random.Next()).Take(4).ToArray();
-
-                // Duplicate and shuffle cards
-                string[] cards = selectedCards.Concat(selectedCards).OrderBy(x => random.Next()).ToArray();
-                bool[] matched = new bool[cards.Length];
-                int attempts = 0;
-
-                while (matched.Any(m => !m))
+                try
                 {
                     Console.Clear();
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("\n\t===============================");
-                    Console.WriteLine("\n\t       Picture Matching\n");
-                    Console.WriteLine("\t===============================");
+                    Console.WriteLine("\n\t=======================================");
+                    Console.WriteLine("\n\t           Picture Matching\n");
+                    Console.WriteLine("\t=======================================");
                     Console.ForegroundColor = ConsoleColor.White;
 
-                    Console.WriteLine("\n\tHere are the cards:");
+                    Console.WriteLine("\tWelcome to Picture Matching!");
 
-                    // Display the cards
-                    for (int i = 0; i < cards.Length; i++)
+                    string[] allCards = { "Apple", "Banana", "Cherry", "Orange", "Grape", "Lemon", "Peach", "Plum", "Pear", "Berry" };
+
+                    Random random = new Random();
+                    string[] selectedCards = allCards.OrderBy(x => random.Next()).Take(4).ToArray();
+
+                    string[] cards = selectedCards.Concat(selectedCards).OrderBy(x => random.Next()).ToArray();
+                    bool[] matched = new bool[cards.Length];
+                    int attempts = 0;
+
+                    while (matched.Any(m => !m))
                     {
-                        if (matched[i])
-                            Console.Write($"\t[{i + 1}: Matched] ");
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("\n\t=======================================");
+                        Console.WriteLine("\n\t           Picture Matching\n");
+                        Console.WriteLine("\t=======================================");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        Console.WriteLine("\n\tHere are the cards:");
+
+                        for (int i = 0; i < cards.Length; i++)
+                        {
+                            if (matched[i])
+                                Console.Write($"\t[{i + 1}: Matched] ");
+                            else
+                                Console.Write($"\t[{i + 1}: ?] ");
+                        }
+                        Console.WriteLine("\n\n\tType 'exit' to stop and return to the main menu.");
+
+                        int firstIndex = GetCardIndex(cards.Length, matched, "first");
+                        if (firstIndex == -1) break;
+
+                        int secondIndex = GetCardIndex(cards.Length, matched, "second", firstIndex);
+                        if (secondIndex == -1) break;
+
+                        Console.WriteLine($"\n\tCard {firstIndex + 1}: {cards[firstIndex]}");
+                        Console.WriteLine($"\tCard {secondIndex + 1}: {cards[secondIndex]}");
+
+                        if (cards[firstIndex] == cards[secondIndex])
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"\n\tYou found a match: {cards[firstIndex]}!");
+                            matched[firstIndex] = matched[secondIndex] = true;
+                        }
                         else
-                            Console.Write($"\t[{i + 1}: ?] ");
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\n\tNot a match. Try again.");
+                        }
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        attempts++;
+                        Thread.Sleep(2000);
                     }
-                    Console.WriteLine();
 
-                    // Get user input for the first and second cards
-                    int firstIndex = GetCardIndex(cards.Length, matched, "first");
-                    int secondIndex = GetCardIndex(cards.Length, matched, "second", firstIndex);
-
-                    // Check for a match
-                    if (cards[firstIndex] == cards[secondIndex])
+                    if (matched.All(m => m))
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"\n\tYou found a match: {cards[firstIndex]}!");
-                        matched[firstIndex] = matched[secondIndex] = true;
+                        Console.WriteLine($"\n\tCongratulations! You matched all the cards in {attempts} attempts.");
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n\tNot a match. Try again.");
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("\n\tYou chose to exit. Returning to the main menu.");
                     }
                     Console.ForegroundColor = ConsoleColor.White;
-
-                    attempts++;
-                    Thread.Sleep(1500); // Delay for better user experience
+                }
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\n\tAn error occurred: " + ex.Message);
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
 
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"\n\tCongratulations! You matched all the cards in {attempts} attempts.");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("\n\tPress any key to return to the main menu...");
-                Console.ReadKey();
-            }
-            catch (Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\n\tAn error occurred: " + ex.Message);
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-        }
+                Console.WriteLine("\n\tWould you like to play again? (yes/no): ");
+            } while (Console.ReadLine()?.Trim().ToLower() == "yes");
 
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\n\tReturning to the main menu. Goodbye!");
+            Console.ResetColor();
+        }
         private static int GetCardIndex(int length, bool[] matched, string prompt, int excludeIndex = -1)
         {
             while (true)
             {
                 Console.Write($"\tEnter the number for the {prompt} card: ");
-                if (int.TryParse(Console.ReadLine(), out int index))
-                {
-                    if (index < 1 || index > length)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"\tInvalid input! Please enter a number between 1 and {length}.");
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    else if (matched[index - 1])
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"\tThis card is already matched. Please select another card.");
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    else if (index - 1 == excludeIndex)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"\tYou cannot choose the same card twice. Please select another card.");
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    else
-                    {
-                        return index - 1;
-                    }
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"\tInvalid input! Please enter a valid number.");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
+                string input = Console.ReadLine()?.Trim();
+                if (input?.ToLower() == "exit") return -1;
+
+                if (int.TryParse(input, out int index) && index >= 1 && index <= length && !matched[index - 1] && index - 1 != excludeIndex)
+                    return index - 1;
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\tInvalid input! Please try again.");
+                Console.ForegroundColor = ConsoleColor.White;
             }
         }
 
         //playWordAssociation
         public static void playWordAssociation()
         {
-            try
+            do
             {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("\n\t===============================");
-                Console.WriteLine("\n\t    Welcome to Word Association!\n");
-                Console.WriteLine("\t===============================");
-                Console.ForegroundColor = ConsoleColor.White;
-
-                Console.WriteLine("\tEnter a word related to the given word.");
-                Console.WriteLine("\tType 'exit' to stop.");
-
-                string[] words = { "Sun", "Moon", "Star", "Ocean", "Forest", "Mountain", "River", "Tree", "Flower", "Grass", "Bird", "Fish", "Sky", "Cloud", "Beach", "Island", "Desert", "Rain", "Snow", "Wind" };
-                Random random = new Random();
-                HashSet<string> usedWords = new HashSet<string>(); // Track used words to avoid repetition
-                string currentWord = words[random.Next(words.Length)];
-
-                while (true)
+                try
                 {
-                    Console.WriteLine("\n\tThe word is: " + currentWord);
-                    Console.Write("\tYour word: ");
-                    string userWord = Console.ReadLine()?.Trim();
-
-                    if (string.IsNullOrWhiteSpace(userWord))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n\tInput cannot be empty. Please try again.");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        continue;
-                    }
-
-                    if (userWord.ToLower() == "exit")
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("\n\tThanks for playing Word Association!");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        break;
-                    }
-
-                    // Validate user word (optional logic for real-world apps)
-                    if (userWord.Equals(currentWord, StringComparison.OrdinalIgnoreCase))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\tTry not to repeat the same word. Think of a related word!");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        continue;
-                    }
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("\tGreat choice! Here's another word.");
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("\n\t=======================================");
+                    Console.WriteLine("\n\t    Welcome to Word Association!\n");
+                    Console.WriteLine("\t=======================================");
                     Console.ForegroundColor = ConsoleColor.White;
 
-                    // Update current word and ensure no repetition
-                    do
-                    {
-                        currentWord = words[random.Next(words.Length)];
-                    } while (usedWords.Contains(currentWord));
+                    Console.WriteLine("\tEnter a word related to the given word.");
+                    Console.WriteLine("\tType 'EXIT' to stop and return to the main menu.");
 
-                    usedWords.Add(currentWord);
+                    string[] words = { "Sun", "Moon", "Star", "Ocean", "Forest", "Mountain", "River", "Tree", "Flower", "Grass", "Bird", "Fish", "Sky", "Cloud", "Beach", "Island", "Desert", "Rain", "Snow", "Wind" };
+                    Random random = new Random();
+                    HashSet<string> usedWords = new HashSet<string>();
+                    string currentWord = words[random.Next(words.Length)];
+
+                    while (true)
+                    {
+                        Console.WriteLine("\n\tThe word is: " + currentWord);
+                        Console.Write("\tYour word: ");
+                        string userWord = Console.ReadLine()?.Trim();
+
+                        if (string.IsNullOrWhiteSpace(userWord))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\n\tInput cannot be empty. Please try again.");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            continue;
+                        }
+
+                        if (userWord.ToLower() == "exit")
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("\n\tYou chose to exit. Returning to the main menu.");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            return;
+                        }
+
+                        if (userWord.Equals(currentWord, StringComparison.OrdinalIgnoreCase))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\tTry not to repeat the same word. Think of a related word!");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            continue;
+                        }
+
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\tGreat choice! Here's another word.");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        do
+                        {
+                            currentWord = words[random.Next(words.Length)];
+                        } while (usedWords.Contains(currentWord));
+
+                        usedWords.Add(currentWord);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\n\tAn unexpected error occurred: " + ex.Message);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("\tPlease restart the game.");
-            }
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\n\tAn unexpected error occurred: " + ex.Message);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+
+                Console.WriteLine("\n\tWould you like to play again? (yes/no): ");
+            } while (Console.ReadLine()?.Trim().ToLower() == "yes");
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\n\tReturning to the main menu. Goodbye!");
+            Console.ResetColor();
         }
 
         //playFindTheDifference
         public static void playFindTheDifference()
         {
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("\t------------------------------------------");
-            Console.WriteLine("\t------------------------------------------\n");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("\t           Welcome to Find the Difference!");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\t------------------------------------------");
-            Console.WriteLine("\t------------------------------------------\n");
-
-            // Define the pairs of words with differences
-            string[] pairs =
+            do
             {
-        "ABCDEF|ABCDXF",
-        "123456|123X56",
-        "HELLOO|HELLOX",
-        "WINDOW|WINDOX",
-        "PYTHON|PYTHXN",
-        "GUITAR|GUITAX",
-        "KITTEN|KITTEN",  // This will result in no difference
-        "PLANET|PLXNET",
-        "FRAMES|FRAMEY",
-        "CANDLE|CANDLX",
-        "MARKER|MARKKR",
-        "BUTTON|BUTHON",
-        "POCKET|POCKXT",
-        "DANGER|DANGRR",
-        "CIRCLE|CIRCXE",
-        "TABLES|TABLX",
-        "PLANET|PLXNXT",
-        "ISLAND|ISLAXD",
-        "LADDER|LADDRR",
-        "BRIDGE|BRIXGE"
-    };
-
-            // Select 5 random pairs from the array
-            Random random = new Random();
-            var selectedPairs = pairs.OrderBy(x => random.Next()).Take(5).ToArray();
-
-            // Loop through each selected pair and ask the user to find the difference
-            foreach (var pair in selectedPairs)
-            {
-                string[] selectedPair = pair.Split('|');
-                string image1 = selectedPair[0];
-                string image2 = selectedPair[1];
-
-                Console.WriteLine("\n*************************************************");
-                Console.WriteLine($"\tImage 1: {image1}");
-                Console.WriteLine($"\tImage 2: {image2}");
-                Console.WriteLine("*************************************************");
-
-                // Find the correct difference (first mismatch)
-                char correctAnswer = '\0';
-                for (int i = 0; i < Math.Min(image1.Length, image2.Length); i++)
+                try
                 {
-                    if (image1[i] != image2[i])
-                    {
-                        correctAnswer = image2[i];
-                        break;
-                    }
-                }
-
-                // If no difference found (e.g., identical strings)
-                if (correctAnswer == '\0')
-                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("\t------------------------------------------");
+                    Console.WriteLine("\t------------------------------------------\n");
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine("\tThere is no difference between the two images!");
+                    Console.WriteLine("\t           Welcome to Find the Difference!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("\t------------------------------------------");
+                    Console.WriteLine("\t------------------------------------------\n");
+
+                    // Hardcoded pairs with unique differing letters
+                    string[] pairs = {
+                "ABCDEF|ABCDGF", "123456|123759", "HELLOO|HELYOO", "WINDOW|WINDXZ",
+                "PYTHON|PYTQON", "GUITAR|GUIZAR", "KITTEN|KITLEN", "PLANET|PLADNT",
+                "FRAMES|FRAMES", "CANDLE|CANFLX", "MARKER|MARRER", "BUTTON|BUTTQN",
+                "POCKET|POCJET", "DANGER|DANGXR", "CIRCLE|CIRPLE", "TABLES|TABCES",
+                "PLANET|PLALET", "ISLAND|ISLXND", "LADDER|LADUER", "BRIDGE|BRIBGE",
+                "GAMBLE|GAMXLE", "SUMMER|SUMXER", "FARMER|FARNER", "BORDER|BORDUR",
+                "CARTER|CARTNR", "CLOUDS|CLNUDS", "BANNER|BANXER", "MIRROR|MIRRPR",
+                "WHEELS|WHEEQS", "TUNNEL|TUNREL", "DINNER|DINVER", "FLOWER|FLQWER"
+            };
+
+                    Random random = new Random();
+                    var selectedPairs = pairs.OrderBy(x => random.Next()).Take(5).ToArray();
+
+                    foreach (var pair in selectedPairs)
+                    {
+                        string[] selectedPair = pair.Split('|');
+                        string image1 = selectedPair[0];
+                        string image2 = selectedPair[1];
+
+                        Console.WriteLine("\n*************************************************");
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine($"\tImage 1: {image1}");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine($"\tImage 2: {image2}");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("*************************************************");
+                        Console.WriteLine("\tType 'EXIT' to stop and return to the main menu.");
+
+                        char correctAnswer = '\0';
+                        for (int i = 0; i < Math.Min(image1.Length, image2.Length); i++)
+                        {
+                            if (image1[i] != image2[i])
+                            {
+                                correctAnswer = image2[i];
+                                break;
+                            }
+                        }
+
+                        if (correctAnswer == '\0')
+                        {
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.WriteLine("\tThere is no difference between the two images!");
+                            Console.ResetColor();
+                            continue;
+                        }
+
+                        Console.WriteLine("\tCan you find the different character? Please enter your answer in CAPITAL LETTERS:");
+                        string userInput = Console.ReadLine()?.Trim();
+
+                        if (userInput?.ToLower() == "exit")
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("\tYou chose to exit. Returning to the main menu.");
+                            Console.ResetColor();
+                            return;
+                        }
+
+                        if (string.IsNullOrEmpty(userInput) || userInput.Length > 1)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\tInvalid input! Please enter a single character.");
+                            Console.ResetColor();
+                            continue;
+                        }
+
+                        char userAnswer = char.ToUpper(userInput[0]);
+                        if (userAnswer == correctAnswer)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("\tCorrect! Well done!");
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"\tSorry, that's not correct. The difference was '{correctAnswer}'.");
+                        }
+                        Console.ResetColor();
+                    }
+
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("\n\tThanks for playing Find the Difference!");
                     Console.ResetColor();
-                    continue;
                 }
-
-                Console.WriteLine("\tCan you find the different character? Please enter your answer in CAPITAL LETTERS:");
-
-                string userInput = Console.ReadLine()?.Trim();
-                if (string.IsNullOrEmpty(userInput) || userInput.Length > 1)
+                catch (Exception ex)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\tInvalid input! Please enter a single character.");
-                    Console.ResetColor();
-                    continue;
+                    Console.WriteLine("\n\tAn unexpected error occurred: " + ex.Message);
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
 
-                char userAnswer = char.ToUpper(userInput[0]);
+                Console.WriteLine("\n\tWould you like to play again? (yes/no): ");
+            } while (Console.ReadLine()?.Trim().ToLower() == "yes");
 
-                if (userAnswer == correctAnswer)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("\tCorrect! Well done!");
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"\tSorry, that's not correct. The difference was '{correctAnswer}'.");
-                }
-                Console.ResetColor();
-            }
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("\n\tThanks for playing Find the Difference!");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\n\tReturning to the main menu. Goodbye!");
             Console.ResetColor();
         }
 
         //playTriviaQuiz
         public static void playTriviaQuiz()
         {
-            bool playAgain;
             do
             {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("\t------------------------------------------");
-                Console.WriteLine("\t------------------------------------------\n");
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("\t           Welcome to Trivia Quiz!");
-                Console.ResetColor();
-                Console.WriteLine("\tAnswer the following questions by typing the letter of your choice (e.g., A, B, C, or D).");
-                Console.WriteLine("\tType 'EXIT' to quit the quiz at any time.\n");
-                Console.WriteLine("\t------------------------------------------");
-                Console.WriteLine("\t------------------------------------------\n");
-
-                var allQuestions = new List<Tuple<string, string[], string>>
-        {
-            new Tuple<string, string[], string>("What is the capital of France?", new[] { "A. Paris", "B. Rome", "C. Berlin", "D. Madrid" }, "A"),
-            new Tuple<string, string[], string>("What is 5 + 7?", new[] { "A. 11", "B. 12", "C. 13", "D. 14" }, "B"),
-            new Tuple<string, string[], string>("What color is the sky on a clear day?", new[] { "A. Blue", "B. Green", "C. Yellow", "D. Red" }, "A"),
-            new Tuple<string, string[], string>("What is the largest planet in our solar system?", new[] { "A. Earth", "B. Jupiter", "C. Saturn", "D. Mars" }, "B"),
-            new Tuple<string, string[], string>("Who wrote 'Romeo and Juliet'?", new[] { "A. Shakespeare", "B. Dickens", "C. Austen", "D. Rowling" }, "A"),
-            new Tuple<string, string[], string>("What is the boiling point of water in Celsius?", new[] { "A. 90°C", "B. 100°C", "C. 110°C", "D. 120°C" }, "B"),
-            new Tuple<string, string[], string>("What is the tallest mountain on Earth?", new[] { "A. Mount Everest", "B. K2", "C. Mount Kilimanjaro", "D. Mount Fuji" }, "A"),
-            new Tuple<string, string[], string>("What is the smallest unit of life?", new[] { "A. Atom", "B. Cell", "C. Molecule", "D. Organism" }, "B"),
-            new Tuple<string, string[], string>("What element does 'O' represent in the periodic table?", new[] { "A. Oxygen", "B. Osmium", "C. Ozone", "D. Oxide" }, "A"),
-            new Tuple<string, string[], string>("What is the fastest land animal?", new[] { "A. Cheetah", "B. Lion", "C. Elephant", "D. Tiger" }, "A"),
-            new Tuple<string, string[], string>("What year did the Titanic sink?", new[] { "A. 1905", "B. 1912", "C. 1920", "D. 1930" }, "B")
-        };
-
-                Random random = new Random();
-                var selectedQuestions = allQuestions.OrderBy(x => random.Next()).Take(5).ToList();
-
-                int score = 0;
-
-                foreach (var question in selectedQuestions)
+                try
                 {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("\n\t==========================================");
+                    Console.WriteLine("\n\t            WELCOME TO TRIVIA QUIZ        ");
+                    Console.WriteLine("\t==========================================");
+                    Console.ForegroundColor = ConsoleColor.White;
+
+                    Console.WriteLine("\n\tInstructions:");
+                    Console.WriteLine("\t- Answer by typing the letter of your choice (A, B, C, or D).");
+                    Console.WriteLine("\t- Type 'EXIT' at any time to quit the quiz.\n");
+
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine($"\n\tQuestion: {question.Item1}");
+                    Console.WriteLine("\tLet's get started!");
                     Console.ResetColor();
 
-                    var options = question.Item2.ToList();
-                    var correctAnswer = question.Item3;
-                    options = options.OrderBy(x => random.Next()).ToList(); // Shuffle options
+                    var allQuestions = new List<Tuple<string, string[], string>>
+            {
+                new Tuple<string, string[], string>("What is the capital of France?", new[] { "Paris", "Rome", "Berlin", "Madrid" }, "Paris"),
+                new Tuple<string, string[], string>("What is 5 + 7?", new[] { "11", "12", "13", "14" }, "12"),
+                new Tuple<string, string[], string>("What color is the sky on a clear day?", new[] { "Blue", "Green", "Yellow", "Red" }, "Blue"),
+                // Add more questions here...
+            };
 
-                    foreach (var option in options)
+                    Random random = new Random();
+                    var selectedQuestions = allQuestions.OrderBy(x => random.Next()).Take(5).ToList();
+                    int score = 0;
+
+                    foreach (var question in selectedQuestions)
                     {
-                        Console.WriteLine($"\t{option}");
-                    }
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine($"\n\tQuestion: {question.Item1}");
+                        Console.ResetColor();
 
-                    string answer;
-                    do
-                    {
-                        Console.Write("\n\tYour answer: ");
-                        answer = Console.ReadLine()?.Trim().ToUpper();
+                        var options = question.Item2.OrderBy(x => random.Next()).ToList();
+                        char correctLetter = (char)('A' + options.IndexOf(question.Item3));
 
-                        if (answer == "EXIT")
+                        for (int i = 0; i < options.Count; i++)
                         {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("\n\tThanks for playing Trivia Quiz!");
-                            Console.ResetColor();
-                            return;
+                            Console.WriteLine($"\t{(char)('A' + i)}. {options[i]}");
                         }
 
-                        if (string.IsNullOrEmpty(answer) || !"ABCD".Contains(answer))
+                        string answer;
+                        do
                         {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\tInvalid input. Please enter A, B, C, or D.");
-                            Console.ResetColor();
+                            Console.Write("\n\tYour answer: ");
+                            answer = Console.ReadLine()?.Trim().ToUpper();
+
+                            if (answer == "EXIT")
+                            {
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Console.WriteLine("\n\tYou chose to exit. Returning to the main menu.");
+                                Console.ResetColor();
+                                return;
+                            }
+
+                            if (string.IsNullOrEmpty(answer) || !"ABCD".Contains(answer))
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("\tInvalid input. Please enter A, B, C, or D.");
+                                Console.ResetColor();
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        } while (true);
+
+                        if (answer[0] == correctLetter)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("\tCorrect!");
+                            score++;
                         }
                         else
                         {
-                            break;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"\tWrong. The correct answer was {correctLetter}. {question.Item3}");
                         }
-                    } while (true);
+                        Console.ResetColor();
+                    }
 
-                    var selectedOption = options.FirstOrDefault(x => x.StartsWith(answer));
-                    if (selectedOption != null && selectedOption.StartsWith(correctAnswer))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("\tCorrect!");
-                        score++;
-                    }
-                    else
-                    {
-                        var correctOption = options.FirstOrDefault(x => x.StartsWith(correctAnswer));
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"\tWrong. The correct answer is {correctOption}");
-                    }
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"\n\tYou answered {score} out of {selectedQuestions.Count} questions correctly!");
+                    Console.WriteLine("\tThanks for playing Trivia Quiz!");
+                    Console.ResetColor();
+                }
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\n\tAn unexpected error occurred: " + ex.Message);
                     Console.ResetColor();
                 }
 
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"\n\tYou answered {score} out of {selectedQuestions.Count} questions correctly!");
-                Console.WriteLine("\tThanks for playing Trivia Quiz!");
-                Console.ResetColor();
-
                 Console.WriteLine("\n\tWould you like to play again? (yes/no): ");
-                string replayChoice = Console.ReadLine()?.Trim().ToLower();
-                playAgain = replayChoice == "yes";
-            } while (playAgain);
+            } while (Console.ReadLine()?.Trim().ToLower() == "yes");
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\n\tReturning to the main menu. Goodbye!");
+            Console.ResetColor();
         }
 
         //playWordle
@@ -1518,68 +1522,95 @@ namespace EASE
         {
             do
             {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("\t------------------------------------------");
-                Console.WriteLine("\t------------------------------------------\n");
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("\t           Welcome to Wordle!");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("\n\tGuess the 5-letter word!");
-                Console.WriteLine("\t------------------------------------------");
-                Console.WriteLine("\t------------------------------------------\n");
-
-                string[] wordBank = { "apple", "grape", "melon", "peach", "berry", "lemon", "cherry", "plum", "kiwi", "mango" };
-                string targetWord = wordBank[new Random().Next(wordBank.Length)];
-
-                int attempts = 6;
-
-                while (attempts > 0)
+                try
                 {
-                    Console.Write($"\n\tYou have {attempts} attempts left. Enter your guess: ");
-                    string guess = Console.ReadLine()?.ToLower();
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("\t------------------------------------------");
+                    Console.WriteLine("\t------------------------------------------\n");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("\t           Welcome to Wordle!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("\n\tGuess the 5-letter word!");
+                    Console.WriteLine("\tType 'EXIT' to stop and return to the main menu.");
+                    Console.WriteLine("\t------------------------------------------");
+                    Console.WriteLine("\t------------------------------------------\n");
 
-                    if (string.IsNullOrWhiteSpace(guess) || guess.Length != 5)
+                    string[] wordBank = {
+                "apple", "grape", "melon", "peach", "berry", "lemon", "cherry",
+                "plumb", "kiwi", "mango", "brick", "flint", "stone", "cloud",
+                "table", "chair", "trace", "spike", "storm", "field", "torch",
+                "trail", "glass", "straw", "slice", "watch", "climb", "shelf"
+            };
+
+                    string targetWord = wordBank[new Random().Next(wordBank.Length)];
+                    int attempts = 6;
+
+                    while (attempts > 0)
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("\tPlease enter a valid 5-letter word.");
+                        Console.Write($"\n\tYou have {attempts} attempts left. Enter your guess: ");
+                        string guess = Console.ReadLine()?.ToLower();
+
+                        if (guess == "exit")
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("\n\tYou chose to exit. Returning to the main menu.");
+                            Console.ResetColor();
+                            return;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(guess) || guess.Length != 5)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\tInvalid input! Please enter a valid 5-letter word.");
+                            Console.ResetColor();
+                            continue;
+                        }
+
+                        if (guess == targetWord)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("\tCongratulations! You guessed the word!");
+                            Console.ResetColor();
+                            break;
+                        }
+
+                        Console.Write("\tFeedback: ");
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (guess[i] == targetWord[i])
+                            {
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.Write(guess[i]);  // Correct letter and position
+                            }
+                            else if (targetWord.Contains(guess[i]))
+                            {
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Console.Write(guess[i]);  // Correct letter, wrong position
+                            }
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.Gray;
+                                Console.Write("_");  // Incorrect letter
+                            }
+                        }
                         Console.ResetColor();
-                        continue;
+                        Console.WriteLine();
+
+                        attempts--;
                     }
 
-                    if (guess == targetWord)
+                    if (attempts == 0)
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("\tCongratulations! You guessed the word!");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"\n\tOut of attempts. The correct word was '{targetWord}'.");
                         Console.ResetColor();
-                        break;
                     }
-
-                    string feedback = "\tFeedback: ";
-                    for (int i = 0; i < 5; i++)
-                    {
-                        if (guess[i] == targetWord[i])
-                        {
-                            feedback += guess[i]; // Correct letter and position
-                        }
-                        else if (targetWord.Contains(guess[i]))
-                        {
-                            feedback += char.ToUpper(guess[i]); // Correct letter, wrong position
-                        }
-                        else
-                        {
-                            feedback += "_"; // Incorrect letter
-                        }
-                    }
-
-                    Console.WriteLine(feedback);
-                    attempts--;
                 }
-
-                if (attempts == 0)
+                catch (Exception ex)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"\n\tOut of attempts. The correct word was '{targetWord}'.");
+                    Console.WriteLine("\n\tAn unexpected error occurred: " + ex.Message);
                     Console.ResetColor();
                 }
 
@@ -1587,9 +1618,8 @@ namespace EASE
             } while (Console.ReadLine()?.Trim().ToLower() == "yes");
 
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("\tThanks for playing Wordle!");
+            Console.WriteLine("\n\tReturning to the main menu. Goodbye!");
             Console.ResetColor();
         }
-
     }
 }
