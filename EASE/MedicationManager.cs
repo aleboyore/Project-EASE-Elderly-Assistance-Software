@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EASE
 {
@@ -70,7 +68,6 @@ namespace EASE
 
                 Console.WriteLine("\n\tMedication updated successfully!");
             }
-
         }
 
         public void DeleteMedication(string name)
@@ -86,7 +83,6 @@ namespace EASE
             {
                 Console.WriteLine("\n\tMedication not found!");
             }
-
         }
 
         public void DisplayDailyReminders()
@@ -99,7 +95,7 @@ namespace EASE
 
             Console.WriteLine("\n\tToday's Medication Reminders:\n");
 
-            var sortedMedications = medication.OrderBy(med => med.Time).ToList();
+            var sortedMedications = medication.OrderBy(med => TimeSpan.Parse(med.Time)).ToList();
 
             foreach (var med in sortedMedications)
             {
@@ -107,5 +103,4 @@ namespace EASE
             }
         }
     }
-
 }

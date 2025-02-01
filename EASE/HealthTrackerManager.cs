@@ -21,7 +21,7 @@ namespace EASE
 
         public void DisplayDetails()
         {
-            Console.WriteLine("\tDate [DD-MM-YYYY]: " + Date +
+            Console.WriteLine("\n\tDate [DD-MM-YYYY]: " + Date +
                       "\n\tTime [HH:mm]: " + Time +
                       "\n\tAge: " + (Age.HasValue ? Age.ToString() : "Not provided") +
                       "\n\tHeight [cm]: " + Height +

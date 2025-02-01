@@ -1532,6 +1532,9 @@ namespace EASE
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("\t           Welcome to Wordle!");
                     Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("\n\tGreen: Correct Letter and Position");
+                    Console.WriteLine("\n\tYellow: Correct Letter but Wrong Position");
+                    Console.WriteLine("\n\tGray/Underscore (_): Wrong Letter and Wrong Position");
                     Console.WriteLine("\n\tGuess the 5-letter word!");
                     Console.WriteLine("\tType 'EXIT' to stop and return to the main menu.");
                     Console.WriteLine("\t------------------------------------------");

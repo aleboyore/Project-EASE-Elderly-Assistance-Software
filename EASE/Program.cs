@@ -4,7 +4,6 @@ using System.Timers;
 using System.Threading;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Security.Cryptography.X509Certificates;
 
 namespace EASE
 {
